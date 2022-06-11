@@ -2,6 +2,12 @@ package model;
 
 import java.util.regex.Pattern;
 
+/**
+ * This is a model class for Customers
+ *
+ * @author shifatsahariar
+ *
+ */
 public class Customer {
     private final String firstName ;
     private final String lastName;
@@ -17,6 +23,12 @@ public class Customer {
     public  String getEmail(){
         return  this.email;
     }
+
+    /**
+     * this method takes the input email from the constructor
+     * @param email - String type email provided by user
+     * @return - String email if its valid and match with provided regex
+     */
     private String emailValidation(String email) {
         String EMAIL_REGEX = "^(.+)@(.+).com$";
         if (!email.matches(EMAIL_REGEX)) {
