@@ -247,13 +247,13 @@ public class MainMenu {
         }while (true);
 
 
-        System.out.println(hotelResource.findARoom(checkIn,checkOut));
-        do {
-//            if (hotelResource.findARoom(checkIn,checkOut).isEmpty()){
-//                System.out.println("Sorry ! No rooms found for booking ! ");
-//                break;
-//            }else
 
+        do {
+            if (hotelResource.findARoom(checkIn,checkOut).isEmpty()){
+                System.out.println("Sorry ! No rooms found for booking ! ");
+                break;
+            }
+            else System.out.println(hotelResource.findARoom(checkIn,checkOut));
             try {
                 System.out.println("Would you like to book a room y/n");
                 char wantToBook = Character.toLowerCase(reserveScanner.next().charAt(0));

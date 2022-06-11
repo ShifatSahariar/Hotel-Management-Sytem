@@ -29,9 +29,9 @@ public class ReservationService {
      *
      */
     // Rooms Collections
-    private HashMap<String,IRoom> roomsHashMap = new HashMap<>();
+    private final HashMap<String,IRoom> roomsHashMap = new HashMap<>();
 
-    Collection<IRoom> availableRoomsCollection = new LinkedList<>();
+
     HashMap<String,Collection<Reservation>> reservationMap = new HashMap<>();
 
     /**
@@ -104,8 +104,10 @@ public class ReservationService {
      * @return Hashset Collection of available Rooms .
      */
     private Collection<IRoom> avaiableRooms(Date checkInDate, Date checkOutDate){
-        Collection<Reservation> reservationsList = new LinkedList<>();
+        Collection<IRoom> availableRoomsCollection = new LinkedList<>();
+        Collection<Reservation> reservationsList = new ArrayList<>();
         HashMap<String,IRoom> reservedRooms = new HashMap<>();
+        HashMap<String,IRoom> tempRoomHashmap = new HashMap<>(roomsHashMap);
         // First Remove the all the reserved room and store non booked room in the list to return
         try {
             // checking if the reservation map is empty or not
@@ -115,49 +117,55 @@ public class ReservationService {
                             for (Collection<Reservation> reservation: reservationMap.values()
                             ) {
                                 reservationsList.addAll(reservation);
+
                             }
                             // then trying to getting the room numbers from those room which are reserved .
                             for (Reservation reservation: reservationsList
                             ) {
+
                                 reservedRooms.put(reservation.getRoom().getRoomNumber(),reservation.getRoom());
+
                             }
                             /* trying to remove the rooms from the main roomsHashMap and store in aa collection .
 
                             */
+                            tempRoomHashmap.values().removeAll(reservedRooms.values());
+                            availableRoomsCollection.addAll(tempRoomHashmap.values());
 
-                            for (String roomNumber: reservedRooms.keySet()
+
+
+                            /**
+                             * If the reserved room will be free according to new customers desired checkin and checkout date .
+                             * @Add those rooms to @availableRoomsCollection
+                             * >> if the allready reserved rooms checkin() date is grater than customer checkOut date
+                             * or if the reserved rooms checkOut() date is smaller than customer checkIn date
+                             * @Add those rooms also in available rooms
+                             *
+                             */
+
+                            for (Reservation reservation: reservationsList
                             ) {
-                                roomsHashMap.remove(roomNumber);
-                                availableRoomsCollection.add(roomsHashMap.remove(roomNumber));
+                                if (reservation.getCheckInDate().compareTo(checkOutDate) > 0
+                                        || reservation.getCheckOutDate().compareTo(checkInDate) < 0){
+                                    availableRoomsCollection.add(reservation.getRoom());
+                                }
                             }
 
             }
+
+
             // if there is no reservation of the rooms , so i can add all rooms from map to my avilable collection .
             else {
-                availableRoomsCollection.addAll(roomsHashMap.values());
 
-            }
+        availableRoomsCollection.addAll(roomsHashMap.values());
 
-
-
+        }
 
 
-                        /**
-                         * If the reserved room will be free according to new customers desired checkin and checkout date .
-                         * @Add those rooms to @availableRoomsCollection
-                         * >> if the allready reserved rooms checkin() date is grater than customer checkOut date
-                         * or if the reserved rooms checkOut() date is smaller than customer checkIn date
-                         * @Add those rooms also in available rooms
-                         *
-                         */
 
-                        for (Reservation reservation: reservationsList
-                        ) {
-                            if (reservation.getCheckInDate().compareTo(checkOutDate) > 0
-                                    || reservation.getCheckOutDate().compareTo(checkInDate) < 0){
-                                availableRoomsCollection.add(reservation.getRoom());
-                            }
-                        }
+
+
+
         }
         catch (NullPointerException ex){
             ex.getLocalizedMessage();
@@ -210,11 +218,18 @@ public class ReservationService {
                             - checin+7 days and compare again with checkout date of reserved date .
                             checkout+7 days and compate again with checkin date of reserved date
          */
+//        try {
+//            if (availableRoomsCollection.isEmpty()){
+//                return recommandedRooms(checkInDate ,checkOutDate);
+//            }
+//            else return avaiableRooms(checkInDate,checkOutDate);
+ //       }
+//        catch (NullPointerException ex)
+ //       {
+ //           ex.getLocalizedMessage();
+ //       }
 
-         if (availableRoomsCollection.isEmpty()){
-             return recommandedRooms(checkInDate ,checkOutDate);
-         }
-         else return avaiableRooms(checkInDate,checkOutDate);
+        return avaiableRooms(checkInDate,checkOutDate);
     }
 
 
