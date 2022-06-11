@@ -1,7 +1,11 @@
 package model;
 
 import java.util.Date;
-
+/**
+ * Reservation class hold the information about customer reservation
+ *
+ * @author shifatsahariar
+ */
 public class Reservation {
     private Customer customer;
     private IRoom room;

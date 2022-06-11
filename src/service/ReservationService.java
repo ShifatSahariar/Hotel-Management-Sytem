@@ -106,7 +106,7 @@ public class ReservationService {
     }
 
 
-    private Date updateTimeforRecomandation (Date dateWantToChange){
+     Date updateTimeforRecomandation (Date dateWantToChange){
         Date updatedDate;
         Calendar c = Calendar.getInstance();
         c.setTime(dateWantToChange);

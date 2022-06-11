@@ -1,5 +1,9 @@
 package model;
 
+/**
+ *Room Interface
+ * @author shifatsahariar
+ */
 public interface IRoom {
     public String getRoomNumber();
     public Double getRoomPrice();

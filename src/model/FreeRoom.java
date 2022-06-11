@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * This class is a child class of room
+ *
+ * @author shifatsahariar
+ */
 public class FreeRoom extends Room{
 
  //private Double freeRoomPrice = 0.0 ;
