@@ -40,6 +40,6 @@ public class Customer {
     }
     @Override
     public String toString() {
-        return "Customer Name : " + firstName +"  "+ lastName + " \n Email " + email;
+        return "Customer Name : " + firstName +"  "+ lastName + " \n Email " + email +"\n";
     }
 }

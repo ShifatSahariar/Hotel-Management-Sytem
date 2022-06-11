@@ -7,6 +7,10 @@ import service.ReservationService;
 
 import java.util.*;
 
+/**
+ * Admin Menu Items
+ * @author shifatsahariar
+ */
 public class AdminMenu {
     private static final AdminResource adminResources = AdminResource.adminResource();
     private static final HotelResource hotelResource = HotelResource.HotelResource();
@@ -23,7 +27,7 @@ public class AdminMenu {
         HotelApplication.menuOptions(mainAdminMenu);
         adminMenuScanner();
     }
-    protected static void adminMenuScanner(){
+    private static void adminMenuScanner(){
 
         Scanner scanner = new Scanner(System.in);
         int option = 0;
@@ -69,7 +73,7 @@ public class AdminMenu {
         String finalRoomNumber;
         double finalRoomPrice;
         RoomType finalRoomType;
-        List<IRoom> newRooms = new ArrayList<>();
+        Collection<IRoom> newRoomsSet = new HashSet<>();
         boolean AddmoreRoomCheck = false;
         Scanner addRoomScanner = new Scanner(System.in);
 
@@ -86,6 +90,7 @@ public class AdminMenu {
                 }
                 else {
                     finalRoomNumber = String.valueOf(roomNumberCheck);
+
                     break;
                 }
             }
@@ -134,8 +139,8 @@ public class AdminMenu {
                 addRoomScanner.next();
             }
         }while (true);
-        Room newRoomToAdd = new Room(finalRoomNumber,finalRoomPrice,finalRoomType);
-        newRooms.add(newRoomToAdd);
+        IRoom newRoomToAdd = new Room(finalRoomNumber,finalRoomPrice,finalRoomType);
+        newRoomsSet.add(newRoomToAdd);
 
         // check if admin want to add more rooms !
         do {
@@ -150,7 +155,7 @@ public class AdminMenu {
                                 }
                                 else {
 
-                                    adminResources.addRoom(newRooms);
+                                    adminResources.addRoom(newRoomsSet);
                                     System.out.println("Rooms has been added !");
                                     AddmoreRoomCheck = false;
 
@@ -172,7 +177,7 @@ public class AdminMenu {
 
     }while (AddmoreRoomCheck);
        mainAdminMenu();
-        adminMenuScanner();
+       adminMenuScanner();
     }
 
     private static void seeAllReservations() {

@@ -8,6 +8,10 @@ import service.ReservationService;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * API for Admin panel
+ * @author shifatsahariar
+ */
 public class AdminResource {
     // Declaring Static Reference
     private static AdminResource singletonAdminResource ;
@@ -27,7 +31,7 @@ public class AdminResource {
         return customerService.getCustomer(email);
     }
 
-    public  void addRoom(List<IRoom> rooms){
+    public  void addRoom(Collection<IRoom> rooms){
         for (IRoom room:rooms
              ) {
             reservationService.addRoom(room);

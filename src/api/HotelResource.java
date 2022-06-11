@@ -10,6 +10,10 @@ import service.ReservationService;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * API for HotelResources  ,which will be used in MainMenu Items
+ * @author shifatsahariar
+ */
 public class HotelResource {
     // Declaring Static Reference
     private static HotelResource singletonHotelResource ;

@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * Main Menu , Customer can access this Menu Items
+ * @author shifatsahariar
+ */
 public class MainMenu {
     private static final AdminResource adminResources = AdminResource.adminResource();
     private static final HotelResource hotelResource = HotelResource.HotelResource();
@@ -163,6 +167,8 @@ public class MainMenu {
 
                     if (hotelResource.getCustomer(email) == null){
                         System.out.println("No Customer found for  :" + email);
+
+                        mainManuScanner();
                         break;
                     }
                     else {
@@ -188,6 +194,7 @@ public class MainMenu {
 
     private static void findAndReserveARoom() {
         Date checkIn,checkOut;
+        Date currentDate = new Date();
         SimpleDateFormat format= new SimpleDateFormat("dd/MM/yyyy");
         String DATE_REGEX = "^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$";
         Scanner reserveScanner = new Scanner(System.in);
@@ -201,7 +208,12 @@ public class MainMenu {
                 }
                 else {
                     checkIn = format.parse(checkInDateChecker);
-                    break;
+                    if (checkIn.after(currentDate))
+                    {
+                        break;
+                    }
+
+                    else System.out.println("Past Dates are not allowed for Reservation ");
                 }
             }
             catch (Exception ex){
@@ -233,8 +245,15 @@ public class MainMenu {
                 reserveScanner.next();
             }
         }while (true);
+
+
         System.out.println(hotelResource.findARoom(checkIn,checkOut));
         do {
+//            if (hotelResource.findARoom(checkIn,checkOut).isEmpty()){
+//                System.out.println("Sorry ! No rooms found for booking ! ");
+//                break;
+//            }else
+
             try {
                 System.out.println("Would you like to book a room y/n");
                 char wantToBook = Character.toLowerCase(reserveScanner.next().charAt(0));
@@ -279,7 +298,9 @@ public class MainMenu {
                       break;
                     }
                     else {
+                        System.out.println("Please Create a account first .");
                         MainMenu.createNewAccount();
+
                         break;
 
                     }
@@ -330,7 +351,7 @@ public class MainMenu {
 
                     roomNumber = String.valueOf(roomNumberChecker);
                     System.out.println("room number is "+hotelResource.getRoom(roomNumber).getRoomNumber());
-                    hotelResource.bookARoom(email,hotelResource.getRoom(roomNumber),checkIn,checkOut);
+                    System.out.println(hotelResource.bookARoom(email,hotelResource.getRoom(roomNumber),checkIn,checkOut));
                     break;
 
                 }

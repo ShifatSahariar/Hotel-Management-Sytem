@@ -4,10 +4,14 @@ import api.HotelResource;
 import model.Customer;
 import model.IRoom;
 import model.Reservation;
-
-
 import java.util.*;
-
+/**
+ * Singleton service class for customer reservations
+ * used static reference
+ * used public private default access modifiers for methods
+ *
+ * @author shifatsahariar
+ */
 public class ReservationService {
 
     // Declaring Static Reference
@@ -20,16 +24,26 @@ public class ReservationService {
         return singletonReservationService;
     }
 
-
+    /**
+     * This section of codes to store information of rooms and reservation in collections
+     *
+     */
     // Rooms Collections
     private HashMap<String,IRoom> roomsHashMap = new HashMap<>();
-    private Collection<IRoom> totalRooms = new LinkedList<>();
-    Collection<IRoom> availableRoomsCollection = new ArrayList<>();
 
+    Collection<IRoom> availableRoomsCollection = new LinkedList<>();
     HashMap<String,Collection<Reservation>> reservationMap = new HashMap<>();
 
-
-
+    /**
+     * Take user inputs and check if we have already customers reservation in list
+     * if there is no reservation then create a new list for the customer and store in reservationmap
+     * if existing reservation found > add the current reservation to that customers reservation list
+     * @param customer Customer type
+     * @param room IRoom type
+     * @param checkIndate Date type , valid date
+     * @param checkOutDate Date type , valid date
+     * @return Reservation
+     */
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkIndate, Date checkOutDate){
         Collection<Reservation> customersReservations ;
        Reservation reservation = new Reservation(customer, room ,checkIndate,checkOutDate);
@@ -48,13 +62,9 @@ public class ReservationService {
 
         }
         catch (NullPointerException exception){
-            System.out.println("HIHIHI");
+            System.out.println("No reservation found");
         }
 
-
-
-
-       totalRooms.remove(room);
 
         return reservation;
 
@@ -62,12 +72,14 @@ public class ReservationService {
         }
 
 
-
-
+    /**
+     * Add rooms to roomsHashmap
+     * @param room IRoom type
+     */
 
     public void addRoom(IRoom room){
         roomsHashMap.put(room.getRoomNumber(),room);
-        totalRooms.add(room);
+
     }
     public Collection<IRoom> getAllRooms(){
         if (roomsHashMap.isEmpty()){
@@ -82,26 +94,77 @@ public class ReservationService {
     public IRoom getARoom(String roomId){
     return roomsHashMap.get(roomId);
     }
+
+    /**
+     * this method will use as a sub method from findAROom () method
+     * this method take the desire date from user and check,which rooms are available for booking
+     *
+     * @param checkInDate Date type,
+     * @param checkOutDate Date type,
+     * @return Hashset Collection of available Rooms .
+     */
     private Collection<IRoom> avaiableRooms(Date checkInDate, Date checkOutDate){
         Collection<Reservation> reservationsList = new LinkedList<>();
+        HashMap<String,IRoom> reservedRooms = new HashMap<>();
+        // First Remove the all the reserved room and store non booked room in the list to return
+        try {
+            // checking if the reservation map is empty or not
+            if (!reservationMap.isEmpty()){
+                            // if not empty then store the reservations from the map to a list
+                            // called reservationsList
+                            for (Collection<Reservation> reservation: reservationMap.values()
+                            ) {
+                                reservationsList.addAll(reservation);
+                            }
+                            // then trying to getting the room numbers from those room which are reserved .
+                            for (Reservation reservation: reservationsList
+                            ) {
+                                reservedRooms.put(reservation.getRoom().getRoomNumber(),reservation.getRoom());
+                            }
+                            /* trying to remove the rooms from the main roomsHashMap and store in aa collection .
 
-        for (Collection<Reservation> reservation: reservationMap.values()
-        ) {
-            reservationsList.addAll(reservation);
+                            */
 
-        }
+                            for (String roomNumber: reservedRooms.keySet()
+                            ) {
+                                roomsHashMap.remove(roomNumber);
+                                availableRoomsCollection.add(roomsHashMap.remove(roomNumber));
+                            }
 
-        for (IRoom room: totalRooms
-        ) {
-            availableRoomsCollection.add(room);
-        }
-        for (Reservation reservation: reservationsList
-        ) {
-            if (reservation.getCheckInDate().compareTo(checkOutDate) > 0
-                    || reservation.getCheckOutDate().compareTo(checkInDate) < 0){
-                availableRoomsCollection.add(reservation.getRoom());
             }
+            // if there is no reservation of the rooms , so i can add all rooms from map to my avilable collection .
+            else {
+                availableRoomsCollection.addAll(roomsHashMap.values());
+
+            }
+
+
+
+
+
+                        /**
+                         * If the reserved room will be free according to new customers desired checkin and checkout date .
+                         * @Add those rooms to @availableRoomsCollection
+                         * >> if the allready reserved rooms checkin() date is grater than customer checkOut date
+                         * or if the reserved rooms checkOut() date is smaller than customer checkIn date
+                         * @Add those rooms also in available rooms
+                         *
+                         */
+
+                        for (Reservation reservation: reservationsList
+                        ) {
+                            if (reservation.getCheckInDate().compareTo(checkOutDate) > 0
+                                    || reservation.getCheckOutDate().compareTo(checkInDate) < 0){
+                                availableRoomsCollection.add(reservation.getRoom());
+                            }
+                        }
         }
+        catch (NullPointerException ex){
+            ex.getLocalizedMessage();
+        }
+
+
+
         return availableRoomsCollection;
     }
 
