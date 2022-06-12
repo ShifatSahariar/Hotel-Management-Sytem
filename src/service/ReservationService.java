@@ -177,26 +177,6 @@ public class ReservationService {
     }
 
 
-     Date updateTimeforRecomandation (Date dateWantToChange){
-        Date updatedDate;
-        Calendar c = Calendar.getInstance();
-        c.setTime(dateWantToChange);
-        c.add(Calendar.DATE,7);
-        updatedDate = c.getTime();
-        return updatedDate;
-    }
-
-    private Collection<IRoom> recommandedRooms(Date checkInDate, Date checkOutDate) {
-
-
-        Date updateTimeForCheckin =updateTimeforRecomandation(checkInDate);
-        Date updateTimeForCheckOut =updateTimeforRecomandation(checkOutDate);
-
-        return avaiableRooms(updateTimeForCheckin,updateTimeForCheckOut);
-
-    }
-
-
 
     // Find a room for reservation
     public Collection<IRoom> findRooms(Date checkInDate , Date checkOutDate){
@@ -218,18 +198,9 @@ public class ReservationService {
                             - checin+7 days and compare again with checkout date of reserved date .
                             checkout+7 days and compate again with checkin date of reserved date
          */
-//        try {
-//            if (availableRoomsCollection.isEmpty()){
-//                return recommandedRooms(checkInDate ,checkOutDate);
-//            }
-//            else return avaiableRooms(checkInDate,checkOutDate);
- //       }
-//        catch (NullPointerException ex)
- //       {
- //           ex.getLocalizedMessage();
- //       }
 
-        return avaiableRooms(checkInDate,checkOutDate);
+            return avaiableRooms(checkInDate,checkOutDate);
+
     }
 
 

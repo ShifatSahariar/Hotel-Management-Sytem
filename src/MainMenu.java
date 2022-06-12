@@ -4,17 +4,14 @@ import model.Customer;
 import model.IRoom;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Main Menu , Customer can access this Menu Items
  * @author shifatsahariar
  */
 public class MainMenu {
-    private static final AdminResource adminResources = AdminResource.adminResource();
+   // private static final AdminResource adminResources = AdminResource.adminResource();
     private static final HotelResource hotelResource = HotelResource.HotelResource();
 
     protected static void mainMenuItems(){
@@ -193,6 +190,7 @@ public class MainMenu {
     }
 
     private static void findAndReserveARoom() {
+        Collection<IRoom> roomYouareAllowedToBook = new ArrayList<>();
         Date checkIn,checkOut;
         Date currentDate = new Date();
         SimpleDateFormat format= new SimpleDateFormat("dd/MM/yyyy");
@@ -249,18 +247,83 @@ public class MainMenu {
 
 
         do {
+            int plusDaystoRecommend = 0;
+            char reCommendCheck = ' ';
             if (hotelResource.findARoom(checkIn,checkOut).isEmpty()){
                 System.out.println("Sorry ! No rooms found for booking ! ");
-                break;
+
+
+                                do{
+                                            try {
+                                                System.out.println("May we recommend rooms ? | y or n " );
+                                                reCommendCheck = Character.toLowerCase(reserveScanner.next().charAt(0));
+                                                if (reCommendCheck == 'y' || reCommendCheck == 'n'){
+
+                                                    if (reCommendCheck == 'y' ){
+                                                        System.out.println("After how many days you want to check ? \n");
+                                                        plusDaystoRecommend= reserveScanner.nextInt();
+                                                        if (plusDaystoRecommend>0){
+
+                                                            roomYouareAllowedToBook = recommandedRooms(checkIn,checkOut,plusDaystoRecommend);
+
+                                                            if (!roomYouareAllowedToBook.isEmpty()){
+                                                                System.out.println("These Rooms would be free after" + plusDaystoRecommend + " Days.");
+                                                                System.out.println(roomYouareAllowedToBook);
+                                                               break;
+                                                            }
+                                                            else {
+                                                                System.out.println("No Rooms found ! Sorry ");
+                                                            };
+
+
+                                                        }
+                                                        else System.out.println("Please select minimum 1 day plus");
+
+
+                                                    }
+                                                    else {
+                                                        break;
+                                                    }
+
+
+                                                }
+                                                else {
+                                                    System.out.println("Please type y or n:");
+                                                }
+                                            }
+
+                                             catch (InputMismatchException ex){
+                                                System.out.println("Please Enter y or n");
+                                                reserveScanner.next();
+                                            }
+                                }while (true);
+
+
+                        if (reCommendCheck == ' ' || reCommendCheck == 'n'){
+                            break;
+                        }
+
+
+
             }
-            else System.out.println(hotelResource.findARoom(checkIn,checkOut));
+
+            else {
+                roomYouareAllowedToBook=hotelResource.findARoom(checkIn,checkOut);
+                System.out.println(roomYouareAllowedToBook);
+            }
             try {
                 System.out.println("Would you like to book a room y/n");
                 char wantToBook = Character.toLowerCase(reserveScanner.next().charAt(0));
                 if (wantToBook == 'y' || wantToBook == 'n'){
 
                     if (wantToBook == 'y' ){
-                       reserveARoom(checkIn ,checkOut);
+                        if (plusDaystoRecommend == 0){
+                            reserveARoom(checkIn ,checkOut,roomYouareAllowedToBook,0);
+                        }
+                        else {
+                            reserveARoom(checkIn ,checkOut,roomYouareAllowedToBook,plusDaystoRecommend);
+                        }
+
                        break;
                     }
                     else {
@@ -282,7 +345,9 @@ public class MainMenu {
         mainManuScanner();
     }
 
-    private static void reserveARoom(Date checkIn, Date checkOut) {
+    private static void reserveARoom(Date checkIn, Date checkOut, Collection<IRoom> roomsAllowedToBook,int plusDays) {
+        Date checkInDate = updateTimeforRecomandation(plusDays,checkIn);
+        Date checkOutDate = updateTimeforRecomandation(plusDays,checkOut);
         Scanner reserveScanner = new Scanner(System.in);
 
         String email,roomNumber;
@@ -344,19 +409,21 @@ public class MainMenu {
         }while (true);
         do {
             try {
-                System.out.println("What room number would you like to reserve ?");
+                System.out.println("Room number would you like to reserve !");
                 int roomNumberChecker = reserveScanner.nextInt();
+                roomNumber = String.valueOf(roomNumberChecker);
 
-                if (roomNumberChecker>0 && roomNumberChecker<= 100){
+                if (roomsAllowedToBook.contains(hotelResource.getRoom(roomNumber))){
 
-                    roomNumber = String.valueOf(roomNumberChecker);
+
+
                     System.out.println("room number is "+hotelResource.getRoom(roomNumber).getRoomNumber());
-                    System.out.println(hotelResource.bookARoom(email,hotelResource.getRoom(roomNumber),checkIn,checkOut));
+                    System.out.println(hotelResource.bookARoom(email,hotelResource.getRoom(roomNumber),checkInDate,checkOutDate));
                     break;
 
                 }
                 else {
-                    System.out.println("The room is not available .");
+                    System.out.println("This room is not available ");
                 }
 
             }
@@ -366,6 +433,23 @@ public class MainMenu {
             }
         }while (true);
     }
+    private static Collection<IRoom> recommandedRooms(Date checkInDate, Date checkOutDate, int plusDaysForRecommend) {
 
+
+
+        Date updateTimeForCheckin =updateTimeforRecomandation(plusDaysForRecommend,checkInDate);
+        Date updateTimeForCheckOut =updateTimeforRecomandation(plusDaysForRecommend,checkOutDate);
+
+        return hotelResource.findARoom(updateTimeForCheckin,updateTimeForCheckOut);
+
+    }
+    static Date updateTimeforRecomandation(int plusDaysForRecommend, Date updateDate){
+        Date updatedDate;
+        Calendar c = Calendar.getInstance();
+        c.setTime(updateDate);
+        c.add(Calendar.DATE,plusDaysForRecommend);
+        updatedDate = c.getTime();
+        return updatedDate;
+    }
 
 }
