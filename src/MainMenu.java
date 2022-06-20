@@ -198,7 +198,7 @@ public class MainMenu {
         Scanner reserveScanner = new Scanner(System.in);
         do {
             try {
-                System.out.println("Enter CheckIn Date mm/dd/yyyy example 02/01/2022");
+                System.out.println("Enter CheckIn Date dd/mm/yyyy example 02/12/2022");
                 String checkInDateChecker = reserveScanner.nextLine();
 
                 if (!checkInDateChecker.matches(DATE_REGEX)){
@@ -221,7 +221,7 @@ public class MainMenu {
         }while (true);
         do {
             try {
-                System.out.println("Enter CheckOut Date mm/dd/yyyy example 02/01/2022");
+                System.out.println("Enter CheckOut Date dd/mm/yyyy example 30/12/2022");
                 String checkInDateChecker = reserveScanner.nextLine();
 
                 if (!checkInDateChecker.matches(DATE_REGEX) ){
