@@ -103,7 +103,7 @@ public class ReservationService {
      * @param checkOutDate Date type,
      * @return Hashset Collection of available Rooms .
      */
-    private Collection<IRoom> avaiableRooms(Date checkInDate, Date checkOutDate){
+    Collection<IRoom> avaiableRooms(Date checkInDate, Date checkOutDate){
         Collection<IRoom> availableRoomsCollection = new LinkedList<>();
         Collection<Reservation> reservationsList = new ArrayList<>();
         HashMap<String,IRoom> reservedRooms = new HashMap<>();
@@ -205,7 +205,7 @@ public class ReservationService {
 
 
 
-      Collection<Reservation> getCustomersReservation(Customer customer){
+      public Collection<Reservation> getCustomersReservation(Customer customer){
         try {
             if (!reservationMap.isEmpty()){
                 if (reservationMap.containsKey(customer.getEmail())){
