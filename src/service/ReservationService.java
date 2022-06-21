@@ -205,7 +205,7 @@ public class ReservationService {
 
 
 
-    public  Collection<Reservation> getCustomersReservation(Customer customer){
+      Collection<Reservation> getCustomersReservation(Customer customer){
         try {
             if (!reservationMap.isEmpty()){
                 if (reservationMap.containsKey(customer.getEmail())){
